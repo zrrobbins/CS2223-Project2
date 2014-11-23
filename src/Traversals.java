@@ -68,40 +68,19 @@ public class Traversals {
      *   a message to that effect to standard output and return the empty array.
      */
     public static void search_pre_to_post(String[] pre) {
-    	/*
-    	String root = pre[0]; // get root of tree
-    	String[] leftBranch = getLeftBranch(pre); //get left branch of tree
-		System.out.println("leftBranch.length = " + leftBranch.length);
-    	String[] rightBranch = getRightBranch(pre, leftBranch.length); // get right branch of tree
     	
-    	// Traverse left branch
-    	if (leftBranch.length != 0) {
-    		System.out.println("leftBranch.length = " + leftBranch.length);
-    		System.out.println("Left branch exists");
-    		search_pre_to_post(leftBranch);
-    	}
-    	
-    	// Traverse right branch
-    	if (rightBranch.length != 0) {
-    		System.out.println("rightBranch.length = " + rightBranch.length);
-    		System.out.println("Right branch exists");
-    		search_pre_to_post(rightBranch);
-    	}
-    	
-    	// Print root
-    	System.out.print(root + " ");
-    	*/
-    	//TreeNode root = buildBST(pre, pre.length, " ", "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    	// Build BST from its preorder traversal
     	TreeNode root = buildBST(pre, pre.length, 0, pre.length - 1);
     	preOrderTraverse(root);
     	System.out.println();
     	inOrderTraverse(root);
     	System.out.println();
+    	// Use a post order traversal and print out results to STDIN
     	postOrderTraverse(root);
     	
     }
     
-    // A C E D B H I G F
+    // Takes a list that represents the preorder traversal of a BST, and builds the BST
     public static TreeNode buildBST(String[] list, int listLength, int low, int high) {
     	int i;
     	
@@ -115,12 +94,7 @@ public class Traversals {
     	if (low == high) {
     		return root;
     	}
-    	/*
-    	else if (low > high){
-    		index--;
-    		return null;//new TreeNode(list[low-1]);
-    	}
-    	*/
+    	
     	// Find first element greater than root element
     	// This indicates where the dividing line is between the data of a left and right branch
     	for(i = low; i <= high; i++) {
@@ -139,56 +113,6 @@ public class Traversals {
     	return root;
     }
     
-    
-    /*
-    public static TreeNode buildBST(String[] list, int length, String min, String max) {
-	        
-		if (index >= length) {
-	        return null;
-	    }
-	    
-	    TreeNode root = null;
-	    
-	    String thisNode = list[index];
-	    
-	    if (thisNode.compareTo(min) > 0 && thisNode.compareTo(max) < 0) {
-	        root = new TreeNode(thisNode);
-	        index++;
-	        
-	        if (index < length) {
-	            root.setLeft(buildBST(list, length, min, thisNode));
-	        }
-	        
-	        if (index < length) {
-	            root.setRight(buildBST(list, length, thisNode, max));
-	        }
-	    }
-	    
-	    return root;
-	}
-	*/
-    /*
-    public static TreeNode buildBST(TreeNode current, String[] list, int i, int largest)
-    {
-        if (i == list.length) 
-        	return i;
-
-        // recurse left
-        if (list[i].compareTo(current.getData()) > 0)
-        {
-          current.getLeft() = new node(arr[i++]);
-          i = buildBST(current.getLeft(), list, i, current.getData());
-        }
-
-        // recurse right
-        if (i < arr.length && arr[i] < largest)
-        {
-          current.right = new node(arr[i++]);
-          i = buildbst(current.right, arr, i, largest);
-        }
-
-        return i;
-    }*/
     
     public static void preOrderTraverse(TreeNode node) {
     	if (node != null) {
