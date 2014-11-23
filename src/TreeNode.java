@@ -11,6 +11,12 @@ public class TreeNode {
 		this.right = r;
 	}
 	
+	public TreeNode(String d) {
+		this.data = d;
+		this.left = null;
+		this.right = null;
+	}
+
 	public String getData() {
 		return this.data;
 	}
@@ -23,4 +29,11 @@ public class TreeNode {
 		return this.right;
 	}
 
+	public void setLeft(TreeNode t) {
+		this.left = t;
+	}
+	
+	public void setRight(TreeNode t) {
+		this.right = t;
+	}
 }
