@@ -101,7 +101,7 @@ public class Traversals {
     	
     }
     
-    
+    // A C E D B H I G F
     public static TreeNode buildBST(String[] list, int listLength, int low, int high) {
     	int i;
     	
@@ -115,25 +115,26 @@ public class Traversals {
     	if (low == high) {
     		return root;
     	}
+    	/*
     	else if (low > high){
+    		index--;
     		return null;//new TreeNode(list[low-1]);
     	}
-    	
+    	*/
     	// Find first element greater than root element
     	// This indicates where the dividing line is between the data of a left and right branch
     	for(i = low; i <= high; i++) {
     		if (list[i].compareTo(list[low]) > 0)
-    		{
     			break;
-    		}
-    		
     	}
     	
     	// Recurse through left branch
-    	root.setLeft(buildBST(list, listLength, low + 1, i - 1));
+    	if (low + 1 <= i - 1)
+    		root.setLeft(buildBST(list, listLength, low + 1, i - 1));
     	
     	// Recurse through right branch
-    	root.setRight(buildBST(list, listLength, i, high));
+    	if (i <= high)
+    		root.setRight(buildBST(list, listLength, i, high));
     	
     	return root;
     }
@@ -190,11 +191,11 @@ public class Traversals {
     }*/
     
     public static void preOrderTraverse(TreeNode node) {
-    	if (node == null)
-    		return;
-    	System.out.print(node.getData() + " ");
-    	preOrderTraverse(node.getLeft());
-    	preOrderTraverse(node.getRight());
+    	if (node != null) {
+    		System.out.print(node.getData() + " ");
+    		preOrderTraverse(node.getLeft());
+    		preOrderTraverse(node.getRight());
+    	}
     }
     
     public static void inOrderTraverse(TreeNode n)
@@ -207,8 +208,7 @@ public class Traversals {
      }
     }
     	
-    public static void postOrderTraverse(TreeNode node)
-    {
+    public static void postOrderTraverse(TreeNode node) {
     	if (node != null) {
     		postOrderTraverse(node.getLeft());
     		postOrderTraverse(node.getRight());
