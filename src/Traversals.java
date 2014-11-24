@@ -247,33 +247,33 @@ public class Traversals {
     }
     
     //Takes a preordered and postordered traversal and returns the binary tree
-    //preIndex = index used in preOrdered traversal
-    //l and h are used as high and low pointers in postOrdered traversal
-    public static TreeNode buildBTPrePost( String[] preTree, String[] postTree, int preIndex,int low, int high, int size)
+    //pIndex = index used in preOrdered traversal
+    //startSub and h are used as  indexes for a subarray in postOrdered traversal
+    public static TreeNode buildBTPrePost( String[] preTree, String[] postTree, int pIndex, int startSub, int high, int size)
     {
-    	if(preIndex > size || low > high)
+    	if(pIndex > size || startSub > high)
     		return null;
     	
     	//make 1st preorder value root
-    	TreeNode root = new TreeNode(preTree[preIndex]);
+    	TreeNode root = new TreeNode(preTree[pIndex]);
     	preIndex++;
     	
     	//check for single elt array
-    	if (low == high)
+    	if (startSub == high)
     		return root;
     	
     	//search for next elt of pre in post
     	int i;
-    	for(i = low; i<= high; i++){
-    		if(preTree[preIndex] == postTree[i])
+    	for(i = startSub; i<= high; i++){
+    		if(preTree[pIndex] == postTree[i])
     			break;
     	}
     	
     	//divide postArray into left and right subtrees
     	if(i <= high)
     	{
-    		root.setLeft(buildBTPrePost(preTree, postTree, preIndex, low, i, size));
-    		root.setRight(buildBTPrePost(preTree, postTree, preIndex, i+1, high, size));
+    		root.setLeft(buildBTPrePost(preTree, postTree, pIndex, startSub, i, size));
+    		root.setRight(buildBTPrePost(preTree, postTree, pIndex, i+1, high, size));
     	}
     	
     	return root;
