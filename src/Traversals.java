@@ -28,7 +28,7 @@ public class Traversals {
         String delims = "[ ]+";
 
         String s1 = (in.readLine()).trim();
-        if  (s1 !=null && s1.length() != 0) {
+        if  (s1 != null && s1.length() != 0) {
            traversal1 = s1.split(delims);
             readAtLeastOneLine = true;
         }
@@ -36,7 +36,7 @@ public class Traversals {
            traversal1 */
 
         String s2 = (in.readLine()).trim();
-        if  (s2 !=null && s2.length() != 0) {
+        if  (s2 != null && s2.length() != 0) {
            traversal2 = s2.split(delims);
             readTwoLines = true;
         }
@@ -71,13 +71,19 @@ public class Traversals {
     	
     	// Build BST from its preorder traversal
     	TreeNode root = buildBST(pre, pre.length, 0, pre.length - 1);
+    	
+    	// Check to see if the constructed tree is a valid BST
+    	if (isValidBST(root))
+    		System.out.println("The tree constructed is a valid BST");
+    	else
+    		System.out.println("The tree constructed is NOT a valid BST");
+    	
     	preOrderTraverse(root);
     	System.out.println();
     	inOrderTraverse(root);
     	System.out.println();
     	// Use a post order traversal and print out results to STDIN
     	postOrderTraverse(root);
-    	
     }
     
     // Takes a list that represents the preorder traversal of a BST, and builds the BST
@@ -122,14 +128,12 @@ public class Traversals {
     	}
     }
     
-    public static void inOrderTraverse(TreeNode n)
-    {
-     if (n != null)
-     {
-      inOrderTraverse(n.getLeft());
-      System.out.print(n.getData() + " ");
-      inOrderTraverse(n.getRight());
-     }
+    public static void inOrderTraverse(TreeNode node) {
+    	if (node != null) {
+    		preOrderTraverse(node.getLeft());
+    		System.out.print(node.getData() + " ");
+    		preOrderTraverse(node.getRight());
+    	}
     }
     	
     public static void postOrderTraverse(TreeNode node) {
@@ -139,15 +143,27 @@ public class Traversals {
     		System.out.print(node.getData() + " ");
     	}
     }
-    /*
-    public static void postOrderTraverse(TreeNode node) {
-    	if (node == null)
-    		return;
-    	postOrderTraverse(node.getLeft());
-    	postOrderTraverse(node.getRight());
-    	System.out.print(node.getData() + " ");
+   
+    // Takes a tree root and passes data to validBST to determine if the tree is indeed a valid BST
+    public static boolean isValidBST(TreeNode node) {
+    	String minString = " ";
+    	String maxString = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
+    	return validBST(node, minString, maxString);
     }
-    */
+    
+    // Takes a tree root, a minimum and maximum to compare to, and determines recursively if the tree is valid BST
+    public static boolean validBST(TreeNode node, String min, String max) 
+    {
+         if(node == null)
+             return true;
+         if(node.getData().compareTo(min) > 0 && node.getData().compareTo(max) < 0
+        	 && validBST(node.getLeft(), min, node.getData())
+             && validBST(node.getRight(), node.getData(), max))
+             return true;
+         else 
+             return false;
+    }
+    
     /*
     public static String[] getLeftBranch(String[] tree) {
     	int junk = 0;
