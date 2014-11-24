@@ -49,12 +49,16 @@ public class Traversals {
         
         /* Testing */
         System.out.println(readAtLeastOneLine);            
-        if (readAtLeastOneLine)
+        if (readAtLeastOneLine && !readTwoLines)
             System.out.println("traversal1 length was : " + traversal1.length);
+            System.out.println("search_pre_to_post:");
+            search_pre_to_post(traversal1);
 
         System.out.println(readTwoLines);            
         if (readTwoLines)
             System.out.println("traversal2 length was : " + traversal2.length);
+            System.out.println("pre_in_to_post:");
+            pre_in_to_post(traversal1, traversal2);
         
         System.out.println("search_pre_to_post:");
         search_pre_to_post(traversal1);
@@ -117,6 +121,46 @@ public class Traversals {
     		root.setRight(buildBST(list, listLength, i, high));
     	
     	return root;
+    }
+    
+    //Takes a preordered and postordered traversal and returns the binary tree
+    //preIndex = index used in preOrdered traversal
+    //l and h are used as high and low pointers in postOrdered traversal
+    public static TreeNode buildBSTPrePost( String[] preTree, String[] postTree, int preIndex,int low, int high, int size)
+    {
+    	if(preIndex > size || low > high)
+    		return null;
+    	
+    	//make 1st preorder value root
+    	TreeNode root = new TreeNode(preTree[preIndex]);
+    	preIndex++;
+    	
+    	//check for single elt array
+    	if (low == high)
+    		return root;
+    	
+    	//search for next elt of pre in post
+    	int i;
+    	for(i = low; i<= high; i++){
+    		if(preTree[preIndex] == postTree[i])
+    			break;
+    	}
+    	
+    	//divide postArray into left and right subtrees
+    	if(i <= high)
+    	{
+    		root.setLeft(buildBSTPrePost(preTree, postTree, preIndex, low, i, size));
+    		root.setRight(buildBSTPrePost(preTree, postTree, preIndex, i+1, high, size));
+    	}
+    	
+    	return root;
+    	
+    }
+    
+    public static TreeNode completedTree(String[] preTree, String[] postTree, int size)
+    {
+    	int preindex = 0;
+    	return buildBSTPrePost(preTree, postTree, preindex, 0, size -1, size);
     }
     
     
@@ -211,6 +255,6 @@ public class Traversals {
      *   binary tree, write a message to that effect to standard output and return the empty array.
      */
     public static String[] pre_post_to_in(String[] tree1, String[] tree2) {
-    	return new String[0];
+	inOrderTraverse(completedTree(tree1, tree2, tree1.length));
     }
 }
