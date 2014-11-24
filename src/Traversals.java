@@ -49,47 +49,51 @@ public class Traversals {
         
         /* Testing */
         System.out.println(readAtLeastOneLine);            
-        if (readAtLeastOneLine && !readTwoLines)
+        if (readAtLeastOneLine && !readTwoLines) {
             System.out.println("traversal1 length was : " + traversal1.length);
             System.out.println("search_pre_to_post:");
             search_pre_to_post(traversal1);
+        }
 
         System.out.println(readTwoLines);            
-        if (readTwoLines)
+        if (readTwoLines) {
+        	System.out.println("traversal1 length was : " + traversal1.length);
             System.out.println("traversal2 length was : " + traversal2.length);
             System.out.println("pre_in_to_post:");
             pre_in_to_post(traversal1, traversal2);
-        
-        System.out.println("search_pre_to_post:");
-        search_pre_to_post(traversal1);
+            //System.out.println("search_pre_to_post:");
+            //search_pre_to_post(traversal1);
+        }
 
     }
     
-    /*
-     * - Takes as input an array purportedly representing the preorder traversal of some binary search tree T.
-     * - Returns as output an array representing the postorder traversal of T.
-     * - If the given input array cannot possibly be the preorder traversal of any binary search tree, write
-     *   a message to that effect to standard output and return the empty array.
-     */
-    public static void search_pre_to_post(String[] pre) {
-    	
-    	// Build BST from its preorder traversal
-    	TreeNode root = buildBST(pre, pre.length, 0, pre.length - 1);
-    	
-    	// Check to see if the constructed tree is a valid BST
-    	if (isValidBST(root))
-    		System.out.println("The tree constructed is a valid BST");
-    	else
-    		System.out.println("The tree constructed is NOT a valid BST");
-    	
-    	preOrderTraverse(root);
-    	System.out.println();
-    	inOrderTraverse(root);
-    	System.out.println();
-    	// Use a post order traversal and print out results to STDIN
-    	postOrderTraverse(root);
+    // Prints out the preorder traversal of a tree
+    public static void preOrderTraverse(TreeNode node) {
+    	if (node != null) {
+    		System.out.print(node.getData() + " ");
+    		preOrderTraverse(node.getLeft());
+    		preOrderTraverse(node.getRight());
+    	}
     }
     
+    // Prints out the inorder traversal of a tree
+    public static void inOrderTraverse(TreeNode node) {
+    	if (node != null) {
+    		preOrderTraverse(node.getLeft());
+    		System.out.print(node.getData() + " ");
+    		preOrderTraverse(node.getRight());
+    	}
+    }
+    	
+    // Prints out the postorder traversal of a tree
+    public static void postOrderTraverse(TreeNode node) {
+    	if (node != null) {
+    		postOrderTraverse(node.getLeft());
+    		postOrderTraverse(node.getRight());
+    		System.out.print(node.getData() + " ");
+    	}
+    }
+   
     // Takes a list that represents the preorder traversal of a BST, and builds the BST
     public static TreeNode buildBST(String[] list, int listLength, int low, int high) {
     	int i;
@@ -123,10 +127,129 @@ public class Traversals {
     	return root;
     }
     
+    // Takes a tree root and passes data to validBST to determine if the tree is indeed a valid BST
+    public static boolean isValidBST(TreeNode node) {
+    	String minString = " ";
+    	String maxString = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
+    	return validBST(node, minString, maxString);
+    }
+    
+    // Takes a tree root, a minimum and maximum to compare to, and determines recursively if the tree is valid BST
+    public static boolean validBST(TreeNode node, String min, String max) 
+    {
+         if(node == null)
+             return true;
+         if(node.getData().compareTo(min) > 0 && node.getData().compareTo(max) < 0
+        	 && validBST(node.getLeft(), min, node.getData())
+             && validBST(node.getRight(), node.getData(), max))
+             return true;
+         else 
+             return false;
+    }
+    
+    // Takes a tree root, and recursively determines if the tree is a valid full tree
+    public static boolean isFullBT(TreeNode node) {
+    	if (node.getLeft() == null && node.getRight() == null)
+    		return true;
+    	if (node.getLeft() != null && node.getRight() != null
+    			&& isFullBT(node.getLeft()) && isFullBT(node.getRight()))
+    		return true;
+    	else
+    		return false;
+    }
+    
+    /*
+     * - Takes as input an array purportedly representing the preorder traversal of some binary search tree T.
+     * - Returns as output an array representing the postorder traversal of T.
+     * - If the given input array cannot possibly be the preorder traversal of any binary search tree, write
+     *   a message to that effect to standard output and return the empty array.
+     */
+    public static void search_pre_to_post(String[] pre) {
+    	
+    	// Build BST from its preorder traversal
+    	TreeNode root = buildBST(pre, pre.length, 0, pre.length - 1);
+    	
+    	// Check to see if the constructed tree is a valid BST
+    	if (isValidBST(root))
+    		System.out.println("The tree constructed is a valid BST");
+    	else
+    		System.out.println("The tree constructed is NOT a valid BST");
+    	
+    	// Use a post order traversal and print out results to STDIN
+    	postOrderTraverse(root);
+    }
+    
+    /*
+     * - Takes as input two arrays, representing the preorder traversal and inorder traversal (in that order)
+     *   of some full binary tree T.
+     * - Returns as output an array representing the postorder traversal of T.
+     * - If the given input arrays cannot possibly be the preorder and inorder traversals of any full binary
+     *   tree, write a message to that effect to standard output and return the empty array
+     */
+    public static void pre_in_to_post(String[] tree1, String[] tree2) {
+    	if (tree1.length != tree2.length) {
+    		System.out.println("Input is NOT a valid full tree");
+    		return;
+    	}
+    	TreeNode root = bTPreIn(tree1, tree2);
+    	if (isFullBT(root)) {
+    		System.out.println("Input is a valid full tree");
+    		postOrderTraverse(root);
+    	}
+    	else
+    		System.out.println("Input is NOT a valid full tree");
+    }
+    
+    // Takes in a preorder traversal and an inorder traversal, and uses a helper function to recursively rebuild the original full binary tree
+    public static TreeNode bTPreIn(String[] pre, String[] in) {
+    	return buildBTPreIn(pre, 0, pre.length-1, in, 0, in.length-1);
+    }
+    
+    // Recursively builds original full binary tree from given preorder and inorder traversal lists
+    public static TreeNode buildBTPreIn(String[] pre, int preStrt, int preEnd, String[] in, int inStart, int inEnd){
+    	if(inStart > inEnd)
+    		return null;
+    	
+    	String root = pre[preStrt];
+    	int root_ind = 0;
+    	int i;
+    	for(i = inStart; i <= inEnd; i++) {
+    		if(in[i].compareTo(root) == 0) {
+    			root_ind = i;
+    			break;
+    		}
+    	}
+
+    	int length = i - inStart;
+    	TreeNode newRoot = new TreeNode(root);
+    	newRoot.setLeft(buildBTPreIn(pre, preStrt+1, preStrt+length, in, inStart, i-1));
+    	newRoot.setRight(buildBTPreIn(pre, preStrt+length+1, preEnd, in, i+1, inEnd));
+
+    	return newRoot;
+    }
+
+    
+    /*
+     * - Takes as input two arrays, representing the preorder traversal and postorder traversal (in that
+     *   order) of some full binary tree T.
+     * - Returns as output an array representing the inorder traversal of T.
+     * - If the given input arrays cannot possibly be the preorder and postorder traversals of any full
+     *   binary tree, write a message to that effect to standard output and return the empty array.
+     */
+    public static void pre_post_to_in(String[] tree1, String[] tree2) {
+    	inOrderTraverse(completedTree(tree1, tree2, tree1.length));
+    }
+    
+    public static TreeNode completedTree(String[] preTree, String[] postTree, int size)
+    {
+    	int preindex = 0;
+    	return buildBTPrePost(preTree, postTree, preindex, 0, size - 1, size);
+    }
+    
     //Takes a preordered and postordered traversal and returns the binary tree
     //preIndex = index used in preOrdered traversal
     //l and h are used as high and low pointers in postOrdered traversal
-    public static TreeNode buildBSTPrePost( String[] preTree, String[] postTree, int preIndex,int low, int high, int size)
+    public static TreeNode buildBTPrePost( String[] preTree, String[] postTree, int preIndex,int low, int high, int size)
     {
     	if(preIndex > size || low > high)
     		return null;
@@ -149,112 +272,12 @@ public class Traversals {
     	//divide postArray into left and right subtrees
     	if(i <= high)
     	{
-    		root.setLeft(buildBSTPrePost(preTree, postTree, preIndex, low, i, size));
-    		root.setRight(buildBSTPrePost(preTree, postTree, preIndex, i+1, high, size));
+    		root.setLeft(buildBTPrePost(preTree, postTree, preIndex, low, i, size));
+    		root.setRight(buildBTPrePost(preTree, postTree, preIndex, i+1, high, size));
     	}
     	
     	return root;
     	
     }
     
-    public static TreeNode completedTree(String[] preTree, String[] postTree, int size)
-    {
-    	int preindex = 0;
-    	return buildBSTPrePost(preTree, postTree, preindex, 0, size -1, size);
-    }
-    
-    
-    public static void preOrderTraverse(TreeNode node) {
-    	if (node != null) {
-    		System.out.print(node.getData() + " ");
-    		preOrderTraverse(node.getLeft());
-    		preOrderTraverse(node.getRight());
-    	}
-    }
-    
-    public static void inOrderTraverse(TreeNode node) {
-    	if (node != null) {
-    		preOrderTraverse(node.getLeft());
-    		System.out.print(node.getData() + " ");
-    		preOrderTraverse(node.getRight());
-    	}
-    }
-    	
-    public static void postOrderTraverse(TreeNode node) {
-    	if (node != null) {
-    		postOrderTraverse(node.getLeft());
-    		postOrderTraverse(node.getRight());
-    		System.out.print(node.getData() + " ");
-    	}
-    }
-   
-    // Takes a tree root and passes data to validBST to determine if the tree is indeed a valid BST
-    public static boolean isValidBST(TreeNode node) {
-    	String minString = " ";
-    	String maxString = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
-    	return validBST(node, minString, maxString);
-    }
-    
-    // Takes a tree root, a minimum and maximum to compare to, and determines recursively if the tree is valid BST
-    public static boolean validBST(TreeNode node, String min, String max) 
-    {
-         if(node == null)
-             return true;
-         if(node.getData().compareTo(min) > 0 && node.getData().compareTo(max) < 0
-        	 && validBST(node.getLeft(), min, node.getData())
-             && validBST(node.getRight(), node.getData(), max))
-             return true;
-         else 
-             return false;
-    }
-    
-    /*
-    public static String[] getLeftBranch(String[] tree) {
-    	int junk = 0;
-    	int i, j, k;
-    	for (i = 0, j = 0; tree[i].compareTo(tree[0]) <= 0; i++, j++) {} // Find length of left branch
-    	String[] lBranch = new String[j];
-    	if (lBranch.length == 0)
-    		return lBranch;
-    	for (j = 0, k = 0; j < i; j++, k++)   //Construct left branch array
-    		lBranch[k] = tree[j+1];
-    	return lBranch;
-    }
-    
-    public static String[] getRightBranch(String[] tree, int lBLength) {
-    	int junk = 0;
-    	int i, j, k;
-    	for (i = lBLength, j = 0; tree[i].compareTo(tree[lBLength]) <= 0; i++, j++) {} // Find length of right branch
-    	String[] rBranch = new String[j];
-    	if (rBranch.length == 0)
-    		return rBranch;
-    	for (j = lBLength, k = 0; j < i; j++, k++)   // Construct right branch array
-    		rBranch[k] = tree[j+1];
-    	return rBranch;
-    }
-    */
-    
-    /*
-     * - Takes as input two arrays, representing the preorder traversal and inorder traversal (in that order)
-     *   of some full binary tree T.
-     * - Returns as output an array representing the postorder traversal of T.
-     * - If the given input arrays cannot possibly be the preorder and inorder traversals of any full binary
-     *   tree, write a message to that effect to standard output and return the empty array
-     */
-    public static String[] pre_in_to_post(String[] tree1, String[] tree2) {
-    	
-    	return new String[0];
-    }
-    
-    
-    /*
-     * - Takes as input two arrays, representing the preorder traversal and postorder traversal (in that
-     *   order) of some full binary tree T.
-     * - Returns as output an array representing the inorder traversal of T.
-     * - If the given input arrays cannot possibly be the preorder and postorder traversals of any full
-     *   binary tree, write a message to that effect to standard output and return the empty array.
-     */
-    public static String[] pre_post_to_in(String[] tree1, String[] tree2) {
-	inOrderTraverse(completedTree(tree1, tree2, tree1.length));
-    }
 }
