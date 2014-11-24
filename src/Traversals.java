@@ -59,9 +59,10 @@ public class Traversals {
             System.out.println("traversal2 length was : " + traversal2.length);
             System.out.println("pre_in_to_post:");
             pre_in_to_post(traversal1, traversal2);
+            System.out.println("pre post to in:");
+            pre_post_to_in(traversal1, traversal2);
         
-        System.out.println("search_pre_to_post:");
-        search_pre_to_post(traversal1);
+       
 
     }
     
@@ -159,7 +160,6 @@ public class Traversals {
     
     public static TreeNode completedTree(String[] preTree, String[] postTree, int size)
     {
-    	int preindex = 0;
     	return buildBSTPrePost(preTree, postTree, preindex, 0, size -1, size);
     }
     
