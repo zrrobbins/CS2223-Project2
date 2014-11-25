@@ -61,8 +61,8 @@ public class Traversals {
             System.out.println("traversal2 length was : " + traversal2.length);
             System.out.println("pre_in_to_post:");
             pre_in_to_post(traversal1, traversal2);
-            //System.out.println("search_pre_to_post:");
-            //search_pre_to_post(traversal1);
+            System.out.println("pre_post_to_in:");
+            pre_post_to_in(traversal1, traversal2);
         }
 
     }
@@ -211,6 +211,7 @@ public class Traversals {
     		return null;
     	
     	String root = pre[preStrt];
+    	
     	int root_ind = 0;
     	int i;
     	for(i = inStart; i <= inEnd; i++) {
@@ -237,18 +238,26 @@ public class Traversals {
      *   binary tree, write a message to that effect to standard output and return the empty array.
      */
     public static void pre_post_to_in(String[] tree1, String[] tree2) {
-    	inOrderTraverse(completedTree(tree1, tree2, tree1.length));
+    	index = 0;
+    	// Build a tree out of its preorder and postorder traversals
+    	TreeNode root = buildBTPrePost(tree1, tree2, 0, tree1.length - 1);
+    	
+    	// Use in order traversal to print out created tree
+    	preOrderTraverse(root);
+    	System.out.println();
+    	
+    	postOrderTraverse(root);
+    	System.out.println();
+    	
+    	inOrderTraverse(root);
     }
-    
-    public static TreeNode completedTree(String[] preTree, String[] postTree, int size)
-    {
-    	int preindex = 0;
-    	return buildBTPrePost(preTree, postTree, preindex, 0, size - 1, size);
-    }
+
     
     //Takes a preordered and postordered traversal and returns the binary tree
     //preIndex = index used in preOrdered traversal
     //l and h are used as high and low pointers in postOrdered traversal
+    
+    /*
     public static TreeNode buildBTPrePost( String[] preTree, String[] postTree, int preIndex,int low, int high, int size)
     {
     	if(preIndex > size || low > high)
@@ -279,5 +288,69 @@ public class Traversals {
     	return root;
     	
     }
+    */
     
+ 
+    public static TreeNode buildBTPrePost(String[] pre, String[] post, int low, int high) {
+    	
+    	if (low >= high)
+    		return null;
+    	
+    	int pre_root_pos = 0;
+    	// If all elements have been visited, return null, otherwise increment index and continue
+    	if (index >= pre.length)
+    		return null;
+    	else {
+    		pre_root_pos = index;
+    		index++;
+    	}
+    	
+    	String root_val = pre[pre_root_pos];
+    	
+    	// Simple search for root_val in post[]
+    	int i;
+    	int post_root_pos = -1;
+    	for (i = low; i <= high; i++) {
+    		if (post[i].compareTo(root_val) == 0) {
+    			post_root_pos = i;
+    			break;
+    		}		
+    	}
+    	
+    	TreeNode newRoot = new TreeNode(root_val);
+    	
+    	// If value in pre was not found in range low->high in post, then it is not a child of previous caller
+    	if (post_root_pos == -1)
+    		return newRoot;
+    	
+    	System.out.println("post_root_pos = " + post_root_pos);
+    	
+    	// Check to see if there are any children for this node
+    	// If so, recursively place them
+    	// If not, or when done, return new root
+    	
+    	// Go left
+    	System.out.println("calling left(" + low +", " + post_root_pos + ")");
+    	newRoot.setLeft(buildBTPrePost(pre, post, low, post_root_pos));
+    	
+    	// Go right
+    	System.out.println("calling right(" + post_root_pos +", " + high + ")");
+    	newRoot.setRight(buildBTPrePost(pre, post, post_root_pos, high));
+    	
+    	return newRoot;
+    	
+    	/*
+    	increment through every element one by one in pre
+    		each time we get to an element in pre, we check to find its location in post
+    		when in pre, we can assume that it is a root in pre, since the order of traversal for pre is root-left-right
+    		since the order of post is left-right-root, if the current element from pre that we are about to
+    		check is before what node the current function call is checking, then the new element is the child
+    		of the current (at this point, check to see if it already has a left child, otherwise be left child)
+    		
+    		if the element we are about to check is after what the current function call is checking, exit function call
+    		and go up to previous call and check again (since we are doing recursion)
+    	
+    	*/
+    	
+    }
 }
